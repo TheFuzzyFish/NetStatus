@@ -43,6 +43,6 @@ There are 1 unreachable services in your network.
 
 I use this program on a Raspberry Pi outside of my network to send me text notifications with [PushSafer](https://www.pushsafer.com/). This setup is easily replicatable with a cron job every 15 minutes that greps for "unreachable" and triggers a PushSafer call if a value is returned.
 
-#To-Do
+# To-Do
  - Add support for users to specify where the `hosts.csv` file is via a command line argument
  - Add support to run a script if numDownHosts > 0
