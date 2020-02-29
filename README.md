@@ -34,5 +34,5 @@ Or alternatively:
 >
 >There are 1 unreachable services in your network.
 
-This program could relatively easily be used to send you notifications via a service like https://www.pushsafer.com/ in the form of a crontab and `grep "unreachable services in your network"`
-[PushSafer](https://www.pushsafer.com/)
+This program could relatively easily be used to send you notifications via a service like [PushSafer](https://www.pushsafer.com/) in the form of a crontab and `grep "unreachable services in your network"`
+
