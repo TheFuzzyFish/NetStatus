@@ -22,7 +22,6 @@ public class hostList {
             scan = new Scanner(file).useDelimiter(",|\\n"); //Uses comma and delimeters
         } catch (FileNotFoundException e) {
             System.out.println("Error, no CSV file found. Please create a CSV file with each line containing a new host in the first cell, followed by a list of ports to check");
-            e.printStackTrace();
         }
 
         int i = 0; // Host index in array
