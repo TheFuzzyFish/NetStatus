@@ -38,7 +38,7 @@ public class argHandler {
 
                                     "\nFiles\n" +
                                     "\tconfig.properties\tStores basic config options\n" +
-                                    "\thosts.csv\tStores the hosts that NetStatus will check in 'hostname,port,port,port' format\n" +
+                                    "\thosts.csv\t\tStores the hosts that NetStatus will check in 'hostname,port,port,port' format\n" +
                                     "\taliases.properties\tStores port aliases so that NetStatus will tell you what the service is instead of just the port number\n");
                     doQuit = true;
                     break;
@@ -114,7 +114,7 @@ public class argHandler {
                                 "# Aliases are used to alter the output of the program. By default, when NetStatus checks a port, it is\n" +
                                 "# listed as 'Port xxxx'. With aliases, you can set a port number equal to some string, and NetStatus\n" +
                                 "# will use that string to reference the port in its output.\n" +
-                                "useAliases=false\n\n" +
+                                "useAliases=true\n\n" +
                                 "# timeout tells the NetStatus how long to wait while attempting to connect to a port. By\n" +
                                 "# default, this is 1 second, but you may need to extend it slightly if your network or\n" +
                                 "# the hosts you're checking are slow, or you start getting false positive.\n" +

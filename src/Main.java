@@ -62,7 +62,6 @@ public class Main {
             }
         }
 
-        // Prints synopsised report
         if (numDownHosts > 0) {
             System.out.println("\nThere are " + numDownHosts + " unreachable services in your network.");
         } else {
