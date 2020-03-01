@@ -20,6 +20,7 @@ public class Main {
         String configPath = argHandler.getConfigPath();
         int timeoutMillis = argHandler.getTimeout();
         boolean useAliases = argHandler.getUseAliases();
+        boolean justify = argHandler.getJustify();
 
         hostList hosts = new hostList(configPath + "hosts.csv");
 
@@ -47,17 +48,26 @@ public class Main {
                 String portName; // Used to parse aliases if necessary
 
                 // If useAliases=true in the config file, replace portName with the specified alias
-                if (useAliases) {
-                    portName = aliasProp.getProperty(Integer.toString(hosts.getPort(i,j)));
+                if (useAliases && aliasProp.getProperty(Integer.toString(hosts.getPort(i,j))) != null) {
+                    portName = aliasProp.getProperty(Integer.toString(hosts.getPort(i,j))) + ":";
                 } else {
-                    portName = "Port " + Integer.toString(hosts.getPort(i, j));
+                    portName = "Port " + Integer.toString(hosts.getPort(i, j)) + ":";
                 }
 
-                if (HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), timeoutMillis)) { // Checks the port for connectivity
-                    System.out.println("\t" + portName + ":\t\tonline");
+                if (justify) {
+                    if (HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), timeoutMillis)) { // Checks the port for connectivity
+                        System.out.println("\t" + String.format("%-15s %15s", portName, "online"));
+                    } else {
+                        System.out.println("\t" + String.format("%-15s %15s", portName, "offline"));
+                        numDownHosts++;
+                    }
                 } else {
-                    System.out.println("\t" + portName + ":\t\toffline");
-                    numDownHosts++;
+                    if (HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), timeoutMillis)) { // Checks the port for connectivity
+                        System.out.println("\t" + portName + " online");
+                    } else {
+                        System.out.println("\t" + portName + " offline");
+                        numDownHosts++;
+                    }
                 }
             }
         }

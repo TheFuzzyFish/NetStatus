@@ -13,6 +13,7 @@ public class argHandler {
     private String configPath;
     private boolean useAliases;
     private int timeout;
+    private boolean justify;
 
     /**
      * Parses input flags
@@ -119,7 +120,11 @@ public class argHandler {
                                 "# default, this is 1 second, but you may need to extend it slightly if your network or\n" +
                                 "# the hosts you're checking are slow, or you start getting false positive.\n" +
                                 "# This variable is represented in milliseconds.\n" +
-                                "timeout=1000\n");
+                                "timeout=1000\n\n" +
+                                "# justify tells NetStatus whether or not to make the output look pretty. In some cases, (IE scripting)\n" +
+                                "# it may make sense to have your text unjustified. Feel free to set that here if you're using this program\n" +
+                                "# for scripting.\n" +
+                                "justify=true\n");
                 writer.close();
             } catch (IOException e) {
                 System.out.println("Error creating new " + configPath + "config.properties. Are your permissions messed up?");
@@ -160,6 +165,7 @@ public class argHandler {
 
         useAliases = Boolean.parseBoolean(configProp.getProperty("useAliases"));
         timeout = Integer.parseInt(configProp.getProperty("timeout"));
+        justify = Boolean.parseBoolean(configProp.getProperty("justify"));
     }
 
     /**
@@ -176,5 +182,13 @@ public class argHandler {
      */
     public boolean getUseAliases() {
         return useAliases;
+    }
+
+    /**
+     * Returns whether or not you should justify the output
+     * @return whether or not you should justify the output
+     */
+    public boolean getJustify() {
+        return justify;
     }
 }
