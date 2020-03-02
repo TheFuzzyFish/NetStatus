@@ -20,7 +20,7 @@ public class Main {
         String configPath = argHandler.getConfigPath();
         int timeoutMillis = argHandler.getTimeout();
         boolean useAliases = argHandler.getUseAliases();
-        boolean justify = argHandler.getJustify();
+        boolean scriptMode = argHandler.getScriptMode();
 
         hostList hosts = new hostList(configPath + "hosts.csv");
 
@@ -39,43 +39,63 @@ public class Main {
         /* -- End of settings -- */
 
 
-        int numDownHosts = 0; // Keeps track of the number of hosts that report offline
+        int numDownTotal = 0; // Keeps track of the number of hosts that report offline
+        String scriptModeOutput = "";
 
         for (int i = 0; i < hosts.returnNumHosts(); i++) { // Loops through the hosts
-            System.out.println(hosts.getHostname(i) + ":");
+            int numDownInThisHost = 0;
+            String buffer = "";
+
+            if (!scriptMode) {
+                System.out.println(hosts.getHostname(i) + ": ");
+            }
 
             for (int j = 0; j < hosts.returnNumPorts(i); j++) { // Loop through the ports of each host
                 String portName; // Used to parse aliases if necessary
 
                 // If useAliases=true in the config file, replace portName with the specified alias
                 if (useAliases && aliasProp.getProperty(Integer.toString(hosts.getPort(i,j))) != null) {
-                    portName = aliasProp.getProperty(Integer.toString(hosts.getPort(i,j))) + ":";
+                    portName = aliasProp.getProperty(Integer.toString(hosts.getPort(i,j)));
                 } else {
-                    portName = "Port " + Integer.toString(hosts.getPort(i, j)) + ":";
+                    if (scriptMode) {
+                        portName = Integer.toString(hosts.getPort(i, j));
+                    } else {
+                        portName = "port " + Integer.toString(hosts.getPort(i, j));
+                    }
                 }
 
-                if (justify) {
-                    if (HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), timeoutMillis)) { // Checks the port for connectivity
-                        System.out.println("\t" + String.format("%-15s %15s", portName, "online"));
-                    } else {
-                        System.out.println("\t" + String.format("%-15s %15s", portName, "offline"));
-                        numDownHosts++;
+                // Checks if host is available. Depending on the value of scriptMode in config.properties, may produce different output
+                if (scriptMode) {
+                    if (!HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), timeoutMillis)) {
+                        buffer = buffer.concat(portName + ",");
+                        numDownTotal++;
+                        numDownInThisHost++;
                     }
                 } else {
                     if (HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), timeoutMillis)) { // Checks the port for connectivity
-                        System.out.println("\t" + portName + " online");
+                        System.out.println("\t" + String.format("%-15s %15s", portName + ": ", "online"));
                     } else {
-                        System.out.println("\t" + portName + " offline");
-                        numDownHosts++;
+                        System.out.println("\t" + String.format("%-15s %15s", portName + ": ", "offline"));
+                        numDownTotal++;
                     }
                 }
             }
+            if (numDownInThisHost > 0) {
+                buffer = buffer.replaceAll(",$", " "); // Removes the trailing comma from the buffer
+                scriptModeOutput = scriptModeOutput.concat("-" + hosts.getHostname(i) + ": " + buffer); // If any services are down for this host, add the hostname and name of the service to the down list
+            }
         }
 
-        if (numDownHosts > 0) {
-            System.out.println("\nThere are " + numDownHosts + " unreachable services in your network.");
-        } else {
+        if (numDownTotal > 0) {
+            if (scriptMode) {
+                System.out.println(numDownTotal + " unreachable: " + scriptModeOutput);
+            } else {
+                System.out.println("\n~~~\nThere are " + numDownTotal + " unreachable services in your network.");
+            }
+        } else if (!scriptMode) {
             System.out.println("\n~~~\nNetwork healthy.");
+        } else {
+            System.out.println("Network healthy.");
         }
     }
 }

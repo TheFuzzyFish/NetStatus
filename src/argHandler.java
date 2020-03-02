@@ -13,7 +13,7 @@ public class argHandler {
     private String configPath;
     private boolean useAliases;
     private int timeout;
-    private boolean justify;
+    private boolean scriptMode;
 
     /**
      * Parses input flags
@@ -46,7 +46,7 @@ public class argHandler {
                 case "-v":
                 case "--version":
                 case "version":
-                    System.out.println("NetStatus.jar Version: 1.1\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
+                    System.out.println("NetStatus.jar Version: 1.2\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
                     doQuit = true;
                     break;
                 case "-c":
@@ -110,7 +110,7 @@ public class argHandler {
                 configFile.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "config.properties"));
                 writer.write(
-                        "#NetStatus v1.1 config.properties\n\n" +
+                        "#NetStatus v1.2 config.properties\n\n" +
                                 "# useAliases tells NetStatus whether or not to ignore the contents of the aliases.conf file.\n" +
                                 "# Aliases are used to alter the output of the program. By default, when NetStatus checks a port, it is\n" +
                                 "# listed as 'Port xxxx'. With aliases, you can set a port number equal to some string, and NetStatus\n" +
@@ -121,10 +121,11 @@ public class argHandler {
                                 "# the hosts you're checking are slow, or you start getting false positive.\n" +
                                 "# This variable is represented in milliseconds.\n" +
                                 "timeout=1000\n\n" +
-                                "# justify tells NetStatus whether or not to make the output look pretty. In some cases, (IE scripting)\n" +
-                                "# it may make sense to have your text unjustified. Feel free to set that here if you're using this program\n" +
-                                "# for scripting.\n" +
-                                "justify=true\n");
+                                "# scriptMode alters the output of NetStatus to be more friendly with scripts. This can be\n" +
+                                "# especially useful if you want to tie NetStatus into an API that messages you, such as\n" +
+                                "# PushSafer. In script mode, NetStatus will print no newlines, and will instead\n" +
+                                "# encapsulate a summary of network outages in a single line.\n" +
+                                "scriptMode=false\n");
                 writer.close();
             } catch (IOException e) {
                 System.out.println("Error creating new " + configPath + "config.properties. Are your permissions messed up?");
@@ -135,7 +136,7 @@ public class argHandler {
                 aliases.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "aliases.properties"));
                 writer.write(
-                        "#NetStatus v1.1 aliases.properties\n\n" +
+                        "#NetStatus v1.2 aliases.properties\n\n" +
                                 "# By default, when NetStatus checks a port, it is listed as 'Port xxxx'. With aliasing, you can\n" +
                                 "# alter the output of NetStatus by replacing 'Port xxxx' with your own custom text better identify\n" +
                                 "# what that port actually runs. I'll get you started with some basics, but feel free to define\n" +
@@ -165,7 +166,14 @@ public class argHandler {
 
         useAliases = Boolean.parseBoolean(configProp.getProperty("useAliases"));
         timeout = Integer.parseInt(configProp.getProperty("timeout"));
-        justify = Boolean.parseBoolean(configProp.getProperty("justify"));
+        scriptMode = Boolean.parseBoolean(configProp.getProperty("scriptMode"));
+
+        try {
+            stream.close();
+        } catch (IOException e) {
+            System.out.println("Error closing config.properties. Did something happen do the file during runtime?");
+        }
+
     }
 
     /**
@@ -185,10 +193,11 @@ public class argHandler {
     }
 
     /**
-     * Returns whether or not you should justify the output
-     * @return whether or not you should justify the output
+     * Returns whether scriptMode is enabled or not, used to determine output format.
+     * @return whether scriptMode is enabled or not, used to determine output format
+     *
      */
-    public boolean getJustify() {
-        return justify;
+    public boolean getScriptMode() {
+        return scriptMode;
     }
 }
