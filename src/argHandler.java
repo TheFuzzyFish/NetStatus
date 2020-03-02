@@ -124,7 +124,7 @@ public class argHandler {
                                 "# scriptMode alters the output of NetStatus to be more friendly with scripts. This can be\n" +
                                 "# especially useful if you want to tie NetStatus into an API that messages you, such as\n" +
                                 "# PushSafer. In script mode, NetStatus will print no newlines, and will instead\n" +
-                                "# encapsulate a summary of network outages in a single line.\n" +
+                                "# encapsulate a summary of network outages in a single line without reporting reachable services.\n" +
                                 "scriptMode=false\n");
                 writer.close();
             } catch (IOException e) {

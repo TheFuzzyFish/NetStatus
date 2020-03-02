@@ -40,11 +40,11 @@ public class Main {
 
 
         int numDownTotal = 0; // Keeps track of the number of hosts that report offline
-        String scriptModeOutput = "";
+        String scriptModeOutput = ""; // If you're in script mode, this is used to forge a string that will be printed
 
         for (int i = 0; i < hosts.returnNumHosts(); i++) { // Loops through the hosts
-            int numDownInThisHost = 0;
-            String buffer = "";
+            int numDownInThisHost = 0; // If you're in script mode, this is used in the background for formatting
+            String buffer = ""; // If you're in script mode, this is used to temporarily store a list of all down services before appending them to scriptModeOutput
 
             if (!scriptMode) {
                 System.out.println(hosts.getHostname(i) + ": ");
@@ -80,7 +80,7 @@ public class Main {
                     }
                 }
             }
-            if (numDownInThisHost > 0) {
+            if (numDownInThisHost > 0) { // This also only applies if you're in script mode
                 buffer = buffer.replaceAll(",$", " "); // Removes the trailing comma from the buffer
                 scriptModeOutput = scriptModeOutput.concat("-" + hosts.getHostname(i) + ": " + buffer); // If any services are down for this host, add the hostname and name of the service to the down list
             }
