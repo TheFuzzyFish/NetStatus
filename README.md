@@ -45,3 +45,6 @@ I use this program on a Raspberry Pi outside of my network to send me text notif
 # To-Do
  - Add support to run a script if numDownHosts > 0
  - Add UDP support
+ 
+ # Known Issues
+ - If a TCP SYN is sent to a server and no response is provided, NetCat will successfully produce an output and close the main thread, but the thread in charge of that TCP socket will not close. As far as I can tell, this is a fundamental issue with Java's method of dealing with sockets, and the TimedSocket implementation I'm using does not avoid it. I'm working on a solution.
