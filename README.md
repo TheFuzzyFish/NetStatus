@@ -40,11 +40,13 @@ If you want to customize the output of NetStatus, you can use the aliases.proper
 </pre>
 Feel free to add your own port aliases, such as FTP or SMTP. NetStatus will substitute them accordingly.
 Additionally, you can toggle whether or not aliases are used (along with the timeout of TCP connections) in config.properties.
-I use this program on a Raspberry Pi outside of my network to send me text notifications with [PushSafer](https://www.pushsafer.com/). This setup is easily replicatable with a cron job every 15 minutes that greps for "unreachable" and triggers a PushSafer call if a value is returned. I made this program to create a clean solution to an awful conglomeration of inefficiency that was my previous solution.
+
+# What's the deal with helper-scripts?
+I use this program on a Raspberry Pi outside of my network to send me text notifications with [PushSafer](https://www.pushsafer.com/). The two scripts in helper-scripts are the exact scripts that I use for this implementation. I simply run the python script as a cron job every 10 minutes, which calls pushSafer.sh. If you want to use that exact setup, just add your API key into the pushSafer.sh script. Otherwise, feel free to use the python script to call whatever other script you want.
 
 # To-Do
- - Add support to run a script if numDownHosts > 0
+ - Add support to run a script if numDownHosts > 0 (see helper-scripts in the meantime)
  - Add UDP support
  
  # Known Issues
- - If a TCP SYN is sent to a server and no response is provided, NetStatus will successfully produce an output and close the main thread, but the thread in charge of that TCP socket will not close. As far as I can tell, this is a fundamental issue with Java's method of dealing with sockets, and the TimedSocket implementation I'm using does not avoid it. I'm working on a solution.
+ - If a TCP SYN is sent to a server and no response is provided, NetStatus will successfully produce an output and close the main thread, but the thread in charge of that TCP socket will not close. As far as I can tell, this is a fundamental issue with Java's method of dealing with sockets, and the TimedSocket implementation I'm using does not avoid it. I'm working on a solution. In the meantime, the python script in helper-scripts will properly exit in this scenario.
