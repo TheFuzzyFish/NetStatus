@@ -46,7 +46,7 @@ public class argHandler {
                 case "-v":
                 case "--version":
                 case "version":
-                    System.out.println("NetStatus.jar Version: 1.2\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
+                    System.out.println("NetStatus.jar Version: 1.2.1\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
                     doQuit = true;
                     break;
                 case "-c":
@@ -110,7 +110,7 @@ public class argHandler {
                 configFile.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "config.properties"));
                 writer.write(
-                        "#NetStatus v1.2 config.properties\n\n" +
+                        "#NetStatus v1.2.1 config.properties\n\n" +
                                 "# useAliases tells NetStatus whether or not to ignore the contents of the aliases.conf file.\n" +
                                 "# Aliases are used to alter the output of the program. By default, when NetStatus checks a port, it is\n" +
                                 "# listed as 'Port xxxx'. With aliases, you can set a port number equal to some string, and NetStatus\n" +
@@ -123,8 +123,8 @@ public class argHandler {
                                 "timeout=1000\n\n" +
                                 "# scriptMode alters the output of NetStatus to be more friendly with scripts. This can be\n" +
                                 "# especially useful if you want to tie NetStatus into an API that messages you, such as\n" +
-                                "# PushSafer. In script mode, NetStatus will print no newlines, and will instead\n" +
-                                "# encapsulate a summary of network outages in a single line without reporting reachable services.\n" +
+                                "# PushSafer. In script mode, NetStatus will attempt to cut down on excessive output, and will instead\n" +
+                                "# only show offline services with newlines separating hosts instead of services.\n" +
                                 "scriptMode=false\n");
                 writer.close();
             } catch (IOException e) {
@@ -136,7 +136,7 @@ public class argHandler {
                 aliases.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "aliases.properties"));
                 writer.write(
-                        "#NetStatus v1.2 aliases.properties\n\n" +
+                        "#NetStatus v1.2.1 aliases.properties\n\n" +
                                 "# By default, when NetStatus checks a port, it is listed as 'Port xxxx'. With aliasing, you can\n" +
                                 "# alter the output of NetStatus by replacing 'Port xxxx' with your own custom text better identify\n" +
                                 "# what that port actually runs. I'll get you started with some basics, but feel free to define\n" +

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Loops through ~/hosts.csv by default to check if hosts ACK TCP requests, useful for checking if a service is online.
+ * Loops through ~/hosts.csv by default to check if hosts ACK TCP requests, then prints a formatted status output.
  * CSV file should consist of entries that look like 'hostname,port,port,port' with up to 256 hosts and 256 ports each.
  */
 public class Main {
@@ -67,7 +67,7 @@ public class Main {
                 // Checks if host is available. Depending on the value of scriptMode in config.properties, may produce different output
                 if (scriptMode) {
                     if (!HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), timeoutMillis)) {
-                        buffer = buffer.concat(portName + ",");
+                        buffer = buffer.concat(portName + ", ");
                         numDownTotal++;
                         numDownInThisHost++;
                     }
@@ -81,11 +81,12 @@ public class Main {
                 }
             }
             if (numDownInThisHost > 0) { // This also only applies if you're in script mode
-                buffer = buffer.replaceAll(",$", " "); // Removes the trailing comma from the buffer
-                scriptModeOutput = scriptModeOutput.concat("-" + hosts.getHostname(i) + ": " + buffer); // If any services are down for this host, add the hostname and name of the service to the down list
+                buffer = buffer.replaceAll(", $", " "); // Removes the trailing comma from the buffer
+                scriptModeOutput = scriptModeOutput.concat("\n~" + hosts.getHostname(i) + ": " + buffer); // If any services are down for this host, add the hostname and name of the service to the down list
             }
         }
 
+        // Outputs the status of the network
         if (numDownTotal > 0) {
             if (scriptMode) {
                 System.out.println(numDownTotal + " unreachable: " + scriptModeOutput);
