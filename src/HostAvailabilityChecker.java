@@ -22,6 +22,4 @@ public class HostAvailabilityChecker {
 
         return true;
     }
-
-
 }
