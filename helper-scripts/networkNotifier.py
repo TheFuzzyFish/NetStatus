@@ -10,4 +10,4 @@ if (returnString != "Network healthy.\n"):
 	os.system("/usr/local/share/scripts/pushSafer.sh '{0}'".format(returnString))
 	print returnString
 else:
-	print "Network healthy"
+	print returnString
