@@ -46,7 +46,7 @@ public class argHandler {
                 case "-v":
                 case "--version":
                 case "version":
-                    System.out.println("NetStatus.jar Version: 1.2.1\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
+                    System.out.println("NetStatus.jar Version: 1.3\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
                     doQuit = true;
                     break;
                 case "-c":
@@ -99,7 +99,12 @@ public class argHandler {
                 hostList.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "hosts.csv"));
                 writer.write(
-                        "example.com,80,443\n");
+                        "#NetStatus v1.3 hosts.csv\n\n" +
+                                "# This is the file where you should put IP addresses or FQDNs for services in your infrastructure.\n" +
+                                "# Each line should consist of a hostname, followed by a list of ports. As of version 1.3 of NetStatus,\n" +
+                                "# there is no limit to the number of hosts or ports this file can have, so long as your computer is\n" +
+                                "# powerful enough to handle it.\n" +
+                                "example.com,80,443\n");
                 writer.close();
             } catch (IOException e) {
                 System.out.println("Error creating new " + configPath + "hosts.csv. Are your permissions messed up?");
@@ -110,7 +115,7 @@ public class argHandler {
                 configFile.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "config.properties"));
                 writer.write(
-                        "#NetStatus v1.2.1 config.properties\n\n" +
+                        "#NetStatus v1.3 config.properties\n\n" +
                                 "# useAliases tells NetStatus whether or not to ignore the contents of the aliases.conf file.\n" +
                                 "# Aliases are used to alter the output of the program. By default, when NetStatus checks a port, it is\n" +
                                 "# listed as 'Port xxxx'. With aliases, you can set a port number equal to some string, and NetStatus\n" +
@@ -136,12 +141,13 @@ public class argHandler {
                 aliases.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "aliases.properties"));
                 writer.write(
-                        "#NetStatus v1.2.1 aliases.properties\n\n" +
+                        "#NetStatus v1.3 aliases.properties\n\n" +
                                 "# By default, when NetStatus checks a port, it is listed as 'Port xxxx'. With aliasing, you can\n" +
                                 "# alter the output of NetStatus by replacing 'Port xxxx' with your own custom text better identify\n" +
                                 "# what that port actually runs. I'll get you started with some basics, but feel free to define\n" +
                                 "# your own:\n" +
                                 "22=SSH\n" +
+                                "21=FTP\n" +
                                 "80=HTTP\n" +
                                 "443=HTTPS\n");
                 writer.close();

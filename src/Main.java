@@ -6,7 +6,7 @@ import java.util.Properties;
 
 /**
  * Loops through ~/hosts.csv by default to check if hosts ACK TCP requests, then prints a formatted status output.
- * CSV file should consist of entries that look like 'hostname,port,port,port' with up to 256 hosts and 256 ports each.
+ * CSV file should consist of entries that look like 'hostname,port,port,port'
  */
 public class Main {
     public static void main(String args[]) {
