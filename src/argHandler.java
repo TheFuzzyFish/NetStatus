@@ -25,12 +25,12 @@ public class argHandler {
                 case "-h":
                 case "--help":
                 case "help":
-                    System.out.println("Usage: java -jar NetStatus.jar [OPTIONS...]\n" +
+                    System.out.println("Usage: java -jar NetStatus-1.3.jar [OPTIONS...]\n" +
                                     "NetStatus is a program to monitor your network infrastructure and help notify\n" +
                                     "you when there's a problem.\n" +
 
                                     "Examples:\n" +
-                                    "\tjava -jar NetStatus.jar -c /usr/local/share/NetStatus/\n" +
+                                    "\tjava -jar NetStatus-1.3.jar -c /usr/local/share/NetStatus/\n" +
 
                                     "\nOptions:\n" +
                                     "\t-h,--help\tDisplays this handy dandy help file\n" +
@@ -46,7 +46,7 @@ public class argHandler {
                 case "-v":
                 case "--version":
                 case "version":
-                    System.out.println("NetStatus.jar Version: 1.3\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
+                    System.out.println("NetStatus-1.3.jar Version: 1.3\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
                     doQuit = true;
                     break;
                 case "-c":
