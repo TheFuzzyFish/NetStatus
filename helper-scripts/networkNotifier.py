@@ -3,7 +3,7 @@
 import os
 
 # Runs NetStatus, checks to see if any services are down, and sends pushSafer.sh notification if so
-returnString = os.popen("/usr/bin/java -jar /usr/local/share/scripts/NetStatus-1.2.1.jar").read()
+returnString = os.popen("/usr/bin/java -jar /usr/local/share/scripts/NetStatus-1.3.jar").read()
 
 # If NetStatus returns down services, send notification. Else, print "Network healthy"
 if (returnString != "Network healthy.\n"):
