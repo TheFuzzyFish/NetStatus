@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -9,55 +10,40 @@ import java.util.Scanner;
  * @author Zachary Kline
  */
 public class hostList {
-    private String hostList[][] = new String[256][256]; //Array that stores hostnames in column 0 and ports in the rest of each row up to 256 hosts with 256 ports each
+    private ArrayList<host> hostList; //ArrayList that stores an arbitrary number of hosts
 
     /**
      * Creates a new hostList based on a CSV file. CSV lines should give hostname first, then a list of port numbers
      * @param nameOfCsvFile the path (or just the name, if the file is in the working directory) of the CSV file to manage
      */
     public hostList(String nameOfCsvFile) {
+        this.hostList = new ArrayList<host>();
+
         File file = new File(nameOfCsvFile);
         Scanner scan = null;
+
         try {
-            scan = new Scanner(file).useDelimiter(",|\\n"); //Uses comma and delimeters
+            scan = new Scanner(file).useDelimiter(",|\\n"); //Uses comma and newlines as delimeters
+
+            /* -- Scan CSV into ArrayList -- */
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+
+                if (!line.isBlank() && line.charAt(0) != '#') {
+                    this.hostList.add(new host(line));
+                }
+            }
         } catch (FileNotFoundException e) {
             System.out.println("Error, no CSV file found. Please create a CSV file with each line containing a new host in the first cell, followed by a list of ports to check");
         }
-
-        int i = 0; // Host index in array
-        int j = 1; // Port index in array
-
-        /* -- Scan CSV into hostList[][] array -- */
-        while (scan.hasNext()) { //While we haven't reached the end of the file
-            hostList[i][0] = scan.next(); //Assume newline, scan in hostname
-
-            while (scan.hasNextInt()) { //Assume hostname already scanned, scan ports until we reach the end of this line
-                hostList[i][j] = Integer.toString(scan.nextInt());
-                j++;
-            }
-            i++; //Assume newline, increment row number to start on next host
-            j = 1; //Reset port index
-        }
     }
 
     /**
-     * If for whatever reason you need the array (you shouldn't)
-     * @return a 2D String array identical to the CSV file
-     */
-    public String[][] returnHostList() {
-        return hostList;
-    }
-
-    /**
-     * Gives the number of hosts detected from the CSV file (should be equal to the number of rows)
-     * @return
+     * Gives the number of hosts detected from the CSV file (should be equal to the number of lines)
+     * @return the number of hosts detected from the CSV file (should be equal to the number of lines)
      */
     public int returnNumHosts() {
-        int x = 0;
-        while (hostList[x][0] != null) {
-            x++;
-        }
-        return x;
+        return this.hostList.size();
     }
 
     /**
@@ -66,11 +52,7 @@ public class hostList {
      * @return the number of ports to check for a certain host
      */
     public int returnNumPorts(int hostIndex) {
-        int x = 0;
-        while (hostList[hostIndex][x + 1] != null) {
-            x++;
-        }
-        return x;
+        return this.hostList.get(hostIndex).getNumPorts();
     }
 
     /**
@@ -79,7 +61,7 @@ public class hostList {
      * @return the name of the host at a certain index
      */
     public String getHostname(int hostIndex) {
-        return hostList[hostIndex][0];
+        return this.hostList.get(hostIndex).hostname;
     }
 
     /**
@@ -89,7 +71,7 @@ public class hostList {
      * @return the port number at a certain index
      */
     public int getPort(int hostIndex, int portIndex) {
-        return Integer.parseInt(hostList[hostIndex][portIndex + 1]);
+        return this.hostList.get(hostIndex).getPort(portIndex);
     }
 }
 
