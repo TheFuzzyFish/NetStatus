@@ -4,7 +4,7 @@ Reads a list of hostnames and ports from a CSV file, then checks each individual
 By default, configuration files are put into ~/NetStatus/. You can specify the absolute path of a folder with the --config flag.
 
 # Installation
-You can either clone this repository and compile the code yourself (not recommended), or you can just download my precompiled .jar file (recommended) from [NetStatus-1.3.jar](https://github.com/TheFuzzyFish/NetStatus/raw/master/NetStatus-1.3.jar)
+You can either clone this repository and compile the code yourself (not recommended), or you can just download my precompiled .jar file (recommended) from [the latest release](https://github.com/TheFuzzyFish/NetStatus/releases)
 
 # Usage
 <pre>
