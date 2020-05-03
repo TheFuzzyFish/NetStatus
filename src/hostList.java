@@ -29,7 +29,7 @@ public class hostList {
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
 
-                if (!line.isBlank() && line.charAt(0) != '#') {
+                if (line.length() != 0 && line.charAt(0) != '#') { // Avoids usage of line.isBlank() to ensure Java 8 compatibility
                     this.hostList.add(new host(line));
                 }
             }
