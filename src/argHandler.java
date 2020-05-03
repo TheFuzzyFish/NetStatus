@@ -137,7 +137,8 @@ public class argHandler {
                                 "# useDiscord is a feature that allows NetStatus to natively use the Discord Webhooks API to\n" +
                                 "# message you if there is a down service in your network. This automatically formats the messages\n" +
                                 "# in script mode so that you can tell what's broken on the fly. If you select useDiscord=true, then\n" +
-                                "# set discordWebhookUrl to the proper URL, and NetStatus will message it \n" +
+                                "# set discordWebhookUrl to the proper URL, and NetStatus will message it when there are down services.\n" +
+                                "# Note that if useDiscord is set to true, then scriptMode will be overriden and forced to true.\n" +
                                 "useDiscord=false\n" +
                                 "discordWebhookUrl=https://discordapp.com/api/webhooks/FIXME/FIXME\n" +
                                 "discordUsername=NetStatus\n");
