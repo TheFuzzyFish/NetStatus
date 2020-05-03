@@ -18,7 +18,6 @@ public class argHandler {
     public String discordWebhookUrl;
     public String discordUsername;
 
-
     /**
      * Parses input flags
      * @param args input flags
@@ -187,6 +186,14 @@ public class argHandler {
         useDiscord = Boolean.parseBoolean(configProp.getProperty("useDiscord"));
         discordWebhookUrl = configProp.getProperty("discordWebhookUrl");
         discordUsername = configProp.getProperty("discordUsername");
+
+        /*
+        * Override scriptMode if useDiscord=true. This fixes a number
+        * of bugs that arise with the text processing in Main()
+        */
+        if (useDiscord) {
+            scriptMode = true;
+        }
 
         try {
             stream.close();
