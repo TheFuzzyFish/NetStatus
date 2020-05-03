@@ -5,7 +5,7 @@ import java.util.Scanner;
  * An object to represent a single host with an arbitrary number of corresponding ports.
  * This is meant to be used with an ArrayList implementation of our host lists to eliminate the fixed size limit of our CSV file
  *
- * @author Zachary Kline
+ * @author TheFuzzyFish
  */
 public class host {
     public String hostname;

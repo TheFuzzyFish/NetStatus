@@ -6,14 +6,18 @@ import java.util.Properties;
  * Always be sure to quit the program if argHandler.doQuit() == true.
  * This can only handle 1 flag at a time
  *
- * @author Zachary Kline
+ * @author TheFuzzyFish
  */
 public class argHandler {
     private boolean doQuit;
     private String configPath;
-    private boolean useAliases;
-    private int timeout;
-    private boolean scriptMode;
+    public boolean useAliases;
+    public int timeout;
+    public boolean scriptMode;
+    public boolean useDiscord;
+    public String discordWebhookUrl;
+    public String discordUsername;
+
 
     /**
      * Parses input flags
@@ -25,12 +29,12 @@ public class argHandler {
                 case "-h":
                 case "--help":
                 case "help":
-                    System.out.println("Usage: java -jar NetStatus-1.3.jar [OPTIONS...]\n" +
+                    System.out.println("Usage: java -jar NetStatus-1.4.0.jar [OPTIONS...]\n" +
                                     "NetStatus is a program to monitor your network infrastructure and help notify\n" +
                                     "you when there's a problem.\n" +
 
                                     "Examples:\n" +
-                                    "\tjava -jar NetStatus-1.3.jar -c /usr/local/share/NetStatus/\n" +
+                                    "\tjava -jar NetStatus-1.4.0.jar -c /usr/local/share/NetStatus/\n" +
 
                                     "\nOptions:\n" +
                                     "\t-h,--help\tDisplays this handy dandy help file\n" +
@@ -46,7 +50,7 @@ public class argHandler {
                 case "-v":
                 case "--version":
                 case "version":
-                    System.out.println("NetStatus-1.3.jar Version: 1.3\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
+                    System.out.println("NetStatus-1.4.0.jar Version: 1.4.0\nLicense: GNU General Public License v3.0\nThis is free software, you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Zachary Kline\nhttps://github.com/TheFuzzyFish/NetStatus");
                     doQuit = true;
                     break;
                 case "-c":
@@ -99,7 +103,7 @@ public class argHandler {
                 hostList.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "hosts.csv"));
                 writer.write(
-                        "#NetStatus v1.3 hosts.csv\n\n" +
+                        "#NetStatus v1.4.0 hosts.csv\n\n" +
                                 "# This is the file where you should put IP addresses or FQDNs for services in your infrastructure.\n" +
                                 "# Each line should consist of a hostname, followed by a list of ports. As of version 1.3 of NetStatus,\n" +
                                 "# there is no limit to the number of hosts or ports this file can have, so long as your computer is\n" +
@@ -115,7 +119,7 @@ public class argHandler {
                 configFile.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "config.properties"));
                 writer.write(
-                        "#NetStatus v1.3 config.properties\n\n" +
+                        "#NetStatus v1.4.0 config.properties\n\n" +
                                 "# useAliases tells NetStatus whether or not to ignore the contents of the aliases.conf file.\n" +
                                 "# Aliases are used to alter the output of the program. By default, when NetStatus checks a port, it is\n" +
                                 "# listed as 'Port xxxx'. With aliases, you can set a port number equal to some string, and NetStatus\n" +
@@ -127,10 +131,17 @@ public class argHandler {
                                 "# This variable is represented in milliseconds.\n" +
                                 "timeout=1000\n\n" +
                                 "# scriptMode alters the output of NetStatus to be more friendly with scripts. This can be\n" +
-                                "# especially useful if you want to tie NetStatus into an API that messages you, such as\n" +
-                                "# PushSafer. In script mode, NetStatus will attempt to cut down on excessive output, and will instead\n" +
-                                "# only show offline services with newlines separating hosts instead of services.\n" +
-                                "scriptMode=false\n");
+                                "# especially useful if you want to tie NetStatus into an API that messages you. In script\n" +
+                                "# mode, NetStatus will attempt to cut down on excessive output, and will instead only show\n" +
+                                "# offline services with newlines separating hosts instead of services.\n" +
+                                "scriptMode=false\n\n" +
+                                "# useDiscord is a feature that allows NetStatus to natively use the Discord Webhooks API to\n" +
+                                "# message you if there is a down service in your network. This automatically formats the messages\n" +
+                                "# in script mode so that you can tell what's broken on the fly. If you select useDiscord=true, then\n" +
+                                "# set discordWebhookUrl to the proper URL, and NetStatus will message it \n" +
+                                "useDiscord=false\n" +
+                                "discordWebhookUrl=https://discordapp.com/api/webhooks/FIXME/FIXME\n" +
+                                "discordUsername=NetStatus\n");
                 writer.close();
             } catch (IOException e) {
                 System.out.println("Error creating new " + configPath + "config.properties. Are your permissions messed up?");
@@ -141,7 +152,7 @@ public class argHandler {
                 aliases.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configPath + "aliases.properties"));
                 writer.write(
-                        "#NetStatus v1.3 aliases.properties\n\n" +
+                        "#NetStatus v1.4.0 aliases.properties\n\n" +
                                 "# By default, when NetStatus checks a port, it is listed as 'Port xxxx'. With aliasing, you can\n" +
                                 "# alter the output of NetStatus by replacing 'Port xxxx' with your own custom text better identify\n" +
                                 "# what that port actually runs. I'll get you started with some basics, but feel free to define\n" +
@@ -173,6 +184,9 @@ public class argHandler {
         useAliases = Boolean.parseBoolean(configProp.getProperty("useAliases"));
         timeout = Integer.parseInt(configProp.getProperty("timeout"));
         scriptMode = Boolean.parseBoolean(configProp.getProperty("scriptMode"));
+        useDiscord = Boolean.parseBoolean(configProp.getProperty("useDiscord"));
+        discordWebhookUrl = configProp.getProperty("discordWebhookUrl");
+        discordUsername = configProp.getProperty("discordUsername");
 
         try {
             stream.close();
@@ -180,30 +194,5 @@ public class argHandler {
             System.out.println("Error closing config.properties. Did something happen do the file during runtime?");
         }
 
-    }
-
-    /**
-     * Returns the timeout value in milliseconds loaded from the configuration files
-     * @return the timeout value in milliseconds loaded from the configuration files
-     */
-    public int getTimeout() {
-        return timeout;
-    }
-
-    /**
-     * Returns whether or not you should use aliases loaded from the configuration files
-     * @return whether or not you should use aliases loaded from the configuration files
-     */
-    public boolean getUseAliases() {
-        return useAliases;
-    }
-
-    /**
-     * Returns whether scriptMode is enabled or not, used to determine output format.
-     * @return whether scriptMode is enabled or not, used to determine output format
-     *
-     */
-    public boolean getScriptMode() {
-        return scriptMode;
     }
 }

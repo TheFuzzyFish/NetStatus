@@ -3,7 +3,7 @@ import java.io.IOException;
 /**
  * Checks to see if a host responds on a certain port withing a timeout frame. Uses David Reilly's TimedSocket class.
  *
- * @author Zachary Kline
+ * @author TheFuzzyFish
  */
 public class HostAvailabilityChecker {
     /**

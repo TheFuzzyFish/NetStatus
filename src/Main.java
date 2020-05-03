@@ -7,6 +7,8 @@ import java.util.Properties;
 /**
  * Loops through ~/hosts.csv by default to check if hosts ACK TCP requests, then prints a formatted status output.
  * CSV file should consist of entries that look like 'hostname,port,port,port'
+ *
+ * @author TheFuzzyFish
  */
 public class Main {
     public static void main(String args[]) {
@@ -18,9 +20,6 @@ public class Main {
         }
 
         String configPath = argHandler.getConfigPath();
-        int timeoutMillis = argHandler.getTimeout();
-        boolean useAliases = argHandler.getUseAliases();
-        boolean scriptMode = argHandler.getScriptMode();
 
         hostList hosts = new hostList(configPath + "hosts.csv");
 
@@ -46,7 +45,7 @@ public class Main {
             int numDownInThisHost = 0; // If you're in script mode, this is used in the background for formatting
             String buffer = ""; // If you're in script mode, this is used to temporarily store a list of all down services before appending them to scriptModeOutput
 
-            if (!scriptMode) {
+            if (!argHandler.scriptMode) {
                 System.out.println(hosts.getHostname(i) + ": ");
             }
 
@@ -54,10 +53,10 @@ public class Main {
                 String portName; // Used to parse aliases if necessary
 
                 // If useAliases=true in the config file, replace portName with the specified alias
-                if (useAliases && aliasProp.getProperty(Integer.toString(hosts.getPort(i,j))) != null) {
+                if (argHandler.useAliases && aliasProp.getProperty(Integer.toString(hosts.getPort(i,j))) != null) {
                     portName = aliasProp.getProperty(Integer.toString(hosts.getPort(i,j)));
                 } else {
-                    if (scriptMode) {
+                    if (argHandler.scriptMode) {
                         portName = Integer.toString(hosts.getPort(i, j));
                     } else {
                         portName = "port " + Integer.toString(hosts.getPort(i, j));
@@ -65,14 +64,14 @@ public class Main {
                 }
 
                 // Checks if host is available. Depending on the value of scriptMode in config.properties, may produce different output
-                if (scriptMode) {
-                    if (!HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), timeoutMillis)) {
+                if (argHandler.scriptMode) {
+                    if (!HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), argHandler.timeout)) {
                         buffer = buffer.concat(portName + ", ");
                         numDownTotal++;
                         numDownInThisHost++;
                     }
                 } else {
-                    if (HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), timeoutMillis)) { // Checks the port for connectivity
+                    if (HostAvailabilityChecker.isHostReachable(hosts.getHostname(i), hosts.getPort(i, j), argHandler.timeout)) { // Checks the port for connectivity
                         System.out.println("\t" + String.format("%-15s %15s", portName + ": ", "online"));
                     } else {
                         System.out.println("\t" + String.format("%-15s %15s", portName + ": ", "offline"));
@@ -86,14 +85,28 @@ public class Main {
             }
         }
 
-        // Outputs the status of the network
+        // Outputs the status of the network and sends Discord notification if necessary
         if (numDownTotal > 0) {
-            if (scriptMode) {
+            if (argHandler.scriptMode) {
                 System.out.println(numDownTotal + " unreachable: " + scriptModeOutput);
             } else {
                 System.out.println("\n~~~\nThere are " + numDownTotal + " unreachable services in your network.");
             }
-        } else if (!scriptMode) {
+
+            /* Sends Discord Notification */
+            if (argHandler.useDiscord) {
+                DiscordWebhook notif = new DiscordWebhook(argHandler.discordWebhookUrl);
+                notif.setUsername(argHandler.discordUsername);
+                notif.setContent(numDownTotal + " unreachable: " + scriptModeOutput.replaceAll("\n", "\\\\n")); // JSON kinda breaks if you put newlines in it, but replacing them with "\n" works fine. I had to add two slashes here because it was being escaped somewhere else.
+
+                try {
+                    notif.execute();
+                } catch (IOException e) {
+                    System.out.println("Error sending Discord notification");
+                    e.printStackTrace();
+                }
+            }
+        } else if (!argHandler.scriptMode) {
             System.out.println("\n~~~\nNetwork healthy.");
         } else {
             System.out.println("Network healthy.");

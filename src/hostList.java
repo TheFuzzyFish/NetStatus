@@ -7,7 +7,7 @@ import java.util.Scanner;
  * An object to scan in and manage the contents of a CSV file.
  * Each line in the CSV file should start with a hostname (IP or domain name), then a list of ports to check on that particular host
  *
- * @author Zachary Kline
+ * @author TheFuzzyFish
  */
 public class hostList {
     private ArrayList<host> hostList; //ArrayList that stores an arbitrary number of hosts

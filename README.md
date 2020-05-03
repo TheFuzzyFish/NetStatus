@@ -24,7 +24,7 @@ Files
 	aliases.properties	Stores port aliases so that NetStatus will tell you what the service is instead of just the port number
 </pre>
 
-You can run in default mode with just `java -jar NetStatus-1.3.jar`, but if you want to specify a configuration folder with its own hosts.csv and settings, use the -c (or --config) flag to specify an absolute path to the folder.
+You can run in default mode with just `java -jar NetStatus-1.4.0.jar`, but if you want to specify a configuration folder with its own hosts.csv and settings, use the -c (or --config) flag to specify an absolute path to the folder.
 The hosts.csv file should read 'hostname,port,port,port'. For example:
 <pre>
 google.com,80,443
